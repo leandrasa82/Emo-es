@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Viagem ao Mundo das Emoções</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noite:#14224A; --ceu:#DCEBFA; --branco:#FFFFFF; --sol:#FFC93C; --sol-escuro:#E5A800;
+  --madeira:#7A4322; --latao:#D9A42B; --c1:#1F4FBF; --c2:#7E2A8C; --c3:#0B6E5F;
+  --verde:#0B6E45; --suave:#4A5778; --linha:#14224A;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--ceu);color:var(--noite);font-family:Lexend,Verdana,Tahoma,sans-serif;font-size:clamp(17px,1.5vw,20px);line-height:1.35}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:4px solid var(--c2);outline-offset:3px}
+h1,h2,p{margin:0}
+svg{display:block;width:100%;height:auto}
+
+/* Barra superior */
+#barra{display:none;align-items:center;gap:14px;padding:8px 16px;background:var(--branco);border-bottom:3px solid var(--noite);flex-wrap:wrap}
+#barra.ativa{display:flex}
+#progresso{display:flex;align-items:center;flex:1 1 220px;min-width:190px;list-style:none;margin:0;padding:0}
+#progresso li{display:flex;align-items:center;flex:1}
+#progresso li:last-child{flex:0 0 auto}
+#progresso .mini{width:46px;flex:none;opacity:.45;border-radius:50%;padding:2px}
+#progresso .atual .mini{opacity:1;box-shadow:0 0 0 3px var(--sol)}
+#progresso .feito .mini{opacity:1}
+#progresso .elo{flex:1;height:8px;background:#C9D3E6;margin:0 4px;border-radius:4px}
+#progresso .feito .elo{background:var(--verde)}
+.ferramentas{display:flex;align-items:center;gap:8px;margin-left:auto}
+#relogio{font-weight:600;font-variant-numeric:tabular-nums;min-width:4ch;text-align:center}
+.icone-btn{width:50px;height:50px;padding:9px;border:3px solid var(--noite);background:var(--branco);border-radius:12px}
+.icone-btn[aria-pressed="false"]{background:#D5DBE8}
+
+/* Botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:64px;padding:12px 28px;border:3px solid var(--noite);border-bottom-width:7px;border-radius:16px;background:var(--sol);font-weight:800;text-align:center}
+.btn:hover{background:#FFD768}
+.btn:active{transform:translateY(3px);border-bottom-width:4px}
+.btn.claro{background:var(--branco)}
+.btn.claro:hover{background:#EEF3FB}
+.btn.pequeno{min-height:54px;padding:8px 16px;font-size:.9em;font-weight:600}
+.btn svg{width:30px;height:30px;flex:none}
+
+#palco{max-width:1180px;margin:0 auto;padding:16px}
+.ecra{display:flex;flex-direction:column;gap:16px}
+
+/* Início */
+.inicio{display:grid;grid-template-columns:1.05fr 1fr;gap:28px;align-items:center;min-height:calc(100vh - 32px)}
+.inicio h1{font-size:clamp(34px,5.2vw,62px);line-height:1.05;font-weight:800;margin-bottom:14px}
+.inicio .missao{font-size:1.15em;margin-bottom:20px;max-width:32em}
+.passos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 24px;padding:0;list-style:none}
+.passos li{text-align:center;font-weight:600;font-size:.9em}
+.passos svg{max-width:84px;margin:0 auto 4px}
+.painel{background:var(--branco);border:3px solid var(--noite);border-radius:20px;padding:20px}
+
+/* Formulário */
+.form{max-width:560px;margin:4vh auto 0;display:flex;flex-direction:column;gap:16px}
+.form h2{font-size:1.6em}
+.campo label{display:block;font-weight:800;margin-bottom:4px}
+.campo input{width:100%;min-height:60px;padding:8px 14px;border:3px solid var(--noite);border-radius:12px;background:var(--branco);font-size:1.15em}
+.campo input[aria-invalid="true"]{border-color:#A81E2C;border-width:4px}
+.erro{color:#A81E2C;font-weight:600;min-height:1.2em;margin-top:4px;font-size:.92em}
+
+/* Hub */
+.hub{text-align:center;align-items:center}
+.hub h2{font-size:clamp(24px,3.2vw,38px);font-weight:800}
+.hub .bau-grande{width:min(520px,92vw)}
+
+/* Perguntas */
+.topo{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.topo h2{font-size:clamp(20px,2.4vw,30px);font-weight:800;flex:1 1 280px}
+.pictos{display:flex;gap:8px;flex:1 1 200px}
+.pictos svg{width:58px;height:58px}
+.pergunta{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.5fr);gap:18px;align-items:start}
+.alvo{background:#EAF1FB;border:4px solid var(--noite);border-radius:20px;overflow:hidden}
+.alvo svg{max-height:56vh}
+.opcoes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.opcao{padding:6px;background:var(--branco);border:4px solid var(--noite);border-bottom-width:8px;border-radius:18px;min-height:64px;font-weight:600;font-size:.86em;line-height:1.2}
+.opcao:hover{background:#FFF4CF}
+.opcao.abana,.abana{animation:abana .5s}
+.opcao span{display:block;padding:6px 2px 4px}
+.opcoes.palavras{grid-template-columns:1fr;gap:14px}
+.palavra{font-size:clamp(28px,3.8vw,46px);font-weight:800;letter-spacing:.04em;padding:18px 8px;background:var(--branco);color:var(--noite)}
+.aviso{min-height:2.6em;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:1.1em;padding:0 8px;border-radius:12px}
+.aviso.ver{background:var(--noite);color:var(--branco);padding:8px 14px}
+.rodape{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.acoes{display:flex;gap:10px;flex-wrap:wrap}
+
+/* Conquistas */
+.fichas{display:flex;gap:8px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.ficha{width:60px;height:60px;display:grid;place-items:center;border:3px dashed var(--suave);border-radius:14px;background:rgba(255,255,255,.55);font-size:32px;font-weight:800}
+.ficha.ganha{border:3px solid var(--noite);background:var(--sol)}
+.ficha.nova{animation:salta .7s}
+.ficha svg{width:38px}
+.fichas.brilha .ficha.ganha{animation:brilha 1.1s 3}
+
+/* Pistas */
+.foco{display:none;fill:none;stroke:#C2185B;stroke-width:6;stroke-dasharray:10 7}
+.com-pista .foco{display:block;animation:pulsa 1.1s infinite}
+.pista{display:none;align-items:center;gap:12px;background:#FFF4CF;border:3px solid var(--noite);border-radius:14px;padding:10px 14px;font-weight:600}
+.pista.ver{display:flex}
+.pista svg{width:50px;flex:none}
+
+/* Cadeado */
+.fecho{display:grid;grid-template-columns:minmax(180px,.7fr) minmax(0,1.3fr);gap:24px;align-items:center}
+.fecho .grande{max-width:300px;margin:0 auto;width:100%}
+.visor{width:100%;min-height:76px;text-align:center;font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:.3em;text-transform:uppercase;border:4px solid var(--noite);border-radius:14px;background:var(--branco);padding:6px}
+.teclado{display:grid;gap:8px;margin:12px 0}
+.teclado.num{grid-template-columns:repeat(5,1fr)}
+.teclado.alfa{grid-template-columns:repeat(9,1fr)}
+.tecla{min-height:58px;border:3px solid var(--noite);border-bottom-width:6px;border-radius:12px;background:var(--branco);font-weight:800;font-size:1.25em;padding:0}
+.tecla:hover{background:#FFF4CF}
+.alfa .tecla{min-height:50px;font-size:1.05em}
+.tecla.apagar{grid-column:span 2;font-size:.82em}
+.cad .arco{transition:transform .8s cubic-bezier(.3,1.5,.5,1);transform-origin:100% 100%;transform-box:fill-box}
+.cad.aberto .arco{transform:translateY(-18px) rotate(16deg)}
+.abana-forte{animation:abana .55s}
+
+/* Baú */
+.bau .tampa{transform-box:fill-box;transform-origin:50% 100%;transition:transform 1.2s ease}
+.bau.aberto .tampa{transform:translateY(-14px) scaleY(.45)}
+.bau .tesouro{opacity:0;transition:opacity 1s .7s}
+.bau.aberto .tesouro{opacity:1}
+
+/* Diálogo */
+dialog{border:4px solid var(--noite);border-radius:22px;padding:24px;max-width:min(620px,92vw);text-align:center;color:var(--noite)}
+dialog::backdrop{background:rgba(20,34,74,.72)}
+.fb-msg{font-size:clamp(22px,3vw,32px);font-weight:800;line-height:1.2;margin:8px 0}
+.fb-extra{font-size:1.05em;margin-bottom:10px}
+.fb-estrela{width:96px;margin:0 auto;animation:salta .8s}
+.fb-ganho{display:flex;align-items:center;justify-content:center;gap:12px;font-weight:600;margin:12px 0 18px}
+.fb-ganho .ficha{flex:none}
+.letra{color:var(--c2);text-decoration:underline;text-decoration-thickness:5px}
+.fb-palavra{font-size:40px;font-weight:800;letter-spacing:.05em}
+
+/* Final */
+.final h1{font-size:clamp(28px,4.4vw,50px);font-weight:800;text-align:center;line-height:1.1}
+.final .tesouro-txt{font-size:1.4em;font-weight:800;text-align:center}
+.colunas{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.aprendi{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.aprendi li{display:flex;gap:10px;align-items:center;font-weight:600}
+.aprendi svg{width:34px;flex:none}
+.dados{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0}
+.dados dt{font-weight:400}.dados dd{margin:0;font-weight:800}
+.confete{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+.confete i{position:absolute;top:-30px;width:14px;height:20px;animation:cai 3.2s linear forwards}
+#estado-envio{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-weight:600}
+.certificado{background:var(--branco);border:8px double var(--noite);border-radius:12px;padding:26px;text-align:center;display:flex;flex-direction:column;gap:12px}
+.certificado h2{font-size:clamp(23px,3.4vw,38px);font-weight:800;line-height:1.15}
+.certificado .quem{font-size:clamp(26px,4vw,42px);font-weight:800;border-bottom:3px solid var(--noite);padding-bottom:6px;margin:0 auto;min-width:60%}
+.certificado svg{max-width:150px;margin:0 auto}
+.cert-info{display:flex;justify-content:center;gap:12px 34px;flex-wrap:wrap}
+.assinatura{margin:26px auto 0;min-width:60%;border-top:3px solid var(--noite);padding-top:6px}
+
+@keyframes abana{0%,100%{transform:translateX(0)}20%{transform:translateX(-12px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(5px)}}
+@keyframes salta{0%{transform:scale(.3)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes pulsa{50%{opacity:.35}}
+@keyframes brilha{50%{box-shadow:0 0 0 7px #C2185B}}
+@keyframes cai{to{transform:translateY(110vh) rotate(540deg)}}
+
+@media (max-width:760px){
+  .inicio,.colunas,.pergunta,.fecho{grid-template-columns:1fr}
+  .inicio{min-height:0}
+  .alvo svg{max-height:36vh}
+  .alvo .rostosvg{max-width:60vw;margin:0 auto}
+  .fecho .grande{max-width:150px}
+  .teclado.alfa{grid-template-columns:repeat(7,1fr)}
+  .ficha{width:50px;height:50px;font-size:26px}
+  #progresso .mini{width:38px}
+  .icone-btn{width:46px;height:46px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .confete{display:none}
+}
+@media print{
+  body{background:#fff}
+  #barra,#anuncio,dialog,.confete,.final>*:not(#certificado){display:none!important}
+  #palco{padding:0;max-width:none}
+  #certificado{break-inside:avoid;border-color:#000}
+  #certificado svg{max-width:260px}
+}
+</style>
+</head>
+<body>
+<header id="barra">
+  <ol id="progresso" aria-label="Progresso dos cadeados"></ol>
+  <div class="ferramentas">
+    <span id="relogio" role="timer" aria-label="Tempo">00:00</span>
+    <button class="icone-btn" id="btn-som" type="button" aria-pressed="true" aria-label="Som"></button>
+    <button class="icone-btn" id="btn-pausa" type="button" aria-label="Pausa"></button>
+  </div>
+</header>
+<main id="palco"></main>
+<div id="anuncio" class="sr" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)"></div>
+<dialog id="dialogo"></dialog>
+
+<script>
+"use strict";
+/* ================= CONFIG — área a editar pelo professor =================
+   urlFolha: endereço terminado em /exec do Google Apps Script.
+   Os códigos e as regras estão ofuscados. Para alterar um valor, abre a
+   consola do navegador e escreve:  ofuscarCodigo("novo valor")
+   Se mudares as regras ou as ordens, confirma que os códigos continuam certos.
+   A ofuscação apenas oculta os valores à primeira vista: não é segurança. */
+const CONFIG = {
+  urlFolha: "https://script.google.com/macros/s/AKfycbwOe6jk6p2MUjoaQI1ucWyAOmPV20jC3uFTm_lukJOBqQ0K6jd0Ipf3uL4b6qZQ-Nyb/exec",                 // colar aqui o endereço da aplicação web
+  mostrarCronometro: true,      // false esconde o tempo ao aluno
+  somLigado: true,              // voz e sons ao iniciar
+  lerAutomaticamente: true,     // lê cada pergunta em voz alta
+  chave: "EMOCOES",
+  cadeado1: {
+    ordem: ["alegria","medo","tristeza","calma","zanga"],
+    codigo: "==gc39Xc",
+    // Regra: cada emoção dá um número; a última dá a chave.
+    regra: "=AzZYcWdh5iKrIzPt9Wb8dWan5iLjwiJxlWb712dnJzPqcDPkczJnNWY992fxpyKmIybpFXctlXbswSIioyLu8mP"
+  },
+  cadeado2: {
+    ordem: ["tristeza","calma","alegria","zanga","medo"],
+    codigo: "==gd49nd",
+    regra: "=AzZYcWdhBSKg4zZjFmev9XckgSLuczZ/dGehV3bkozNoYyIsc2fn1XY19GJ+kiLg0WYnB2Z1FmL3AyJ2YSM78mP"
+  },
+  cadeado3: {
+    ordem: ["medo","calma","zanga","tristeza","alegria"],
+    codigo: "=4gCIwAC",
+    // Regra: posição da letra a retirar de cada palavra.
+    regra: "==AO+lXbswSIioyLu8Wag9XbiUDKxACL9cTbhFXan5CJhwyPxlWf51GLo8DJsE2Y89XcqsiJi8mP"
+  }
+};
+/* ========================================================================= */
+
+function desofuscar(t){
+  const s=atob(t.split("").reverse().join(""));
+  const b=Uint8Array.from(s,(c,i)=>c.charCodeAt(0)^CONFIG.chave.charCodeAt(i%CONFIG.chave.length));
+  return new TextDecoder().decode(b);
+}
+window.ofuscarCodigo=function(t){
+  const b=new TextEncoder().encode(t);let s="";
+  b.forEach((v,i)=>s+=String.fromCharCode(v^CONFIG.chave.charCodeAt(i%CONFIG.chave.length)));
+  return btoa(s).split("").reverse().join("");
+};
+const normalizar=t=>String(t).normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\s+/g,"").toUpperCase();
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const baralhar=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const $=s=>document.querySelector(s);
+const NOME={alegria:"ALEGRIA",tristeza:"TRISTEZA",medo:"MEDO",zanga:"ZANGA",calma:"CALMA"};
+
+/* ---------- Ilustrações: rostos ---------- */
+const CRIANCAS=[
+  {pele:"#F6CFAE",sombra:"#E2B28C",cabelo:"#5A3418",tipo:"curto",roupa:"#3D7DD8"},
+  {pele:"#8D5A3A",sombra:"#744729",cabelo:"#1E1410",tipo:"afro",roupa:"#E0B13A"},
+  {pele:"#FBDCC2",sombra:"#E8BE9E",cabelo:"#B9702A",tipo:"longo",roupa:"#2F9E7E"},
+  {pele:"#C98F62",sombra:"#AE764C",cabelo:"#2A1B14",tipo:"caracois",roupa:"#C65A9B"},
+  {pele:"#E9B88E",sombra:"#D09B70",cabelo:"#20201F",tipo:"longo",roupa:"#6C5BC7"},
+  {pele:"#5F3B28",sombra:"#4C2D1D",cabelo:"#120C09",tipo:"curto",roupa:"#E0703A"}
+];
+function cabeloTras(c){
+  if(c.tipo==="longo")return `<path d="M40 112Q38 22 120 22Q202 22 200 112L208 206Q170 222 120 222Q70 222 32 206Z" fill="${c.cabelo}"/>`;
+  if(c.tipo==="afro")return `<circle cx="120" cy="92" r="98" fill="${c.cabelo}"/>`;
+  if(c.tipo==="caracois"){let s="";[[48,88],[42,126],[60,50],[92,28],[128,24],[162,36],[188,66],[198,104],[196,136],[46,150]].forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="27" fill="${c.cabelo}"/>`);return s}
+  return "";
+}
+function cabeloFrente(c){
+  if(c.tipo==="curto")return `<path d="M46 112Q40 26 122 26Q200 28 194 112Q186 76 158 62Q116 80 74 66Q54 80 46 112Z" fill="${c.cabelo}"/>`;
+  if(c.tipo==="longo")return `<path d="M48 104Q50 30 120 30Q190 30 192 104Q176 66 140 58Q104 76 72 68Q56 80 48 104Z" fill="${c.cabelo}"/>`;
+  if(c.tipo==="afro")return `<path d="M50 96Q62 42 120 42Q178 42 190 96Q160 62 120 62Q80 62 50 96Z" fill="${c.cabelo}"/>`;
+  return `<path d="M50 96Q62 36 120 34Q178 36 190 96Q172 62 148 72Q122 54 96 72Q68 62 50 96Z" fill="${c.cabelo}"/>`;
+}
+function olho(cx,cy,rx,ry,dx,dy,r){return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#fff" stroke="#14224A" stroke-width="2.5"/><circle cx="${cx+dx}" cy="${cy+dy}" r="${r}" fill="#14224A"/><circle cx="${cx+dx+2.5}" cy="${cy+dy-3}" r="2" fill="#fff"/>`}
+function expressao(e,c){
+  const tr=`stroke="#14224A" stroke-linecap="round" stroke-linejoin="round" fill="none"`;
+  const sob=(d)=>`<path d="${d}" fill="${c.pele}"/>`;
+  switch(e){
+  case "alegria": return `<circle cx="74" cy="134" r="14" fill="#F2786D" opacity=".38"/><circle cx="166" cy="134" r="14" fill="#F2786D" opacity=".38"/>
+    <path d="M76 84Q92 70 108 84M132 84Q148 70 164 84" ${tr} stroke-width="6"/>
+    ${olho(92,106,13,12,0,0,7)}${olho(148,106,13,12,0,0,7)}
+    <path d="M78 136H162Q156 182 120 182Q84 182 78 136Z" fill="#7A1626" stroke="#14224A" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M84 139H156Q155 151 150 153H90Q85 151 84 139Z" fill="#fff"/><path d="M100 174Q120 158 140 174Q130 181 120 181Q110 181 100 174Z" fill="#E8596B"/>`;
+  case "tristeza": return `<path d="M72 92L106 76M168 92L134 76" ${tr} stroke-width="6.5"/>
+    ${olho(92,108,13,12,0,4,6.5)}${olho(148,108,13,12,0,4,6.5)}
+    ${sob("M76 104L108 92V84H76Z")}${sob("M164 104L132 92V84H164Z")}
+    <path d="M78 105L107 93M162 105L133 93" ${tr} stroke-width="3"/>
+    <path d="M94 164Q120 136 146 164" ${tr} stroke-width="6.5"/>
+    <path d="M158 124Q170 142 158 150Q146 142 158 124Z" fill="#3FA3E8" stroke="#14224A" stroke-width="2"/>`;
+  case "medo": return `<path d="M72 72Q88 54 108 70M132 70Q152 54 168 72" ${tr} stroke-width="6"/>
+    ${olho(92,104,17,19,0,0,6)}${olho(148,104,17,19,0,0,6)}
+    <path d="M98 152Q104 136 120 138Q136 136 142 152Q146 174 120 176Q94 174 98 152Z" fill="#3A1020" stroke="#14224A" stroke-width="4"/>
+    <path d="M76 140L70 152M164 140L170 152" ${tr} stroke-width="3" opacity=".5"/>`;
+  case "zanga": return `<circle cx="74" cy="134" r="15" fill="#D8222E" opacity=".3"/><circle cx="166" cy="134" r="15" fill="#D8222E" opacity=".3"/>
+    ${olho(92,110,14,12,1,2,6.5)}${olho(148,110,14,12,-1,2,6.5)}
+    ${sob("M74 94L110 112L110 92L74 88Z")}${sob("M166 94L130 112L130 92L166 88Z")}
+    <path d="M70 84L112 106M170 84L128 106" ${tr} stroke-width="9"/>
+    <path d="M114 88L116 96M126 88L124 96" ${tr} stroke-width="3"/>
+    <rect x="88" y="146" width="64" height="24" rx="9" fill="#fff" stroke="#14224A" stroke-width="4"/>
+    <path d="M88 158H152M104 146V170M120 146V170M136 146V170" stroke="#14224A" stroke-width="2.5"/>`;
+  case "calma": return `<path d="M76 88Q92 80 108 88M132 88Q148 80 164 88" ${tr} stroke-width="5"/>
+    <path d="M78 108Q92 120 106 108M134 108Q148 120 162 108" ${tr} stroke-width="6"/>
+    <path d="M100 150Q120 164 140 150" ${tr} stroke-width="5.5"/>`;
+  default: return `<path d="M78 86H106M134 86H162" ${tr} stroke-width="5.5"/>
+    ${olho(92,106,12,12,0,0,6.5)}${olho(148,106,12,12,0,0,6.5)}
+    <path d="M104 154H136" ${tr} stroke-width="5.5"/>`;
+  }
+}
+function rostoInterno(e,i,fundo){
+  const c=CRIANCAS[i%CRIANCAS.length];
+  return `${fundo?`<rect width="240" height="240" fill="${fundo}"/>`:""}${cabeloTras(c)}
+  <path d="M34 240Q38 196 120 192Q202 196 206 240Z" fill="${c.roupa}"/>
+  <rect x="100" y="166" width="40" height="38" rx="14" fill="${c.sombra}"/>
+  <circle cx="50" cy="116" r="13" fill="${c.pele}"/><circle cx="190" cy="116" r="13" fill="${c.pele}"/>
+  <ellipse cx="120" cy="112" rx="72" ry="80" fill="${c.pele}"/>
+  ${cabeloFrente(c)}${expressao(e,c)}`;
+}
+function rosto(e,i,fundo="#EAF1FB"){
+  return `<svg class="rostosvg" viewBox="0 0 240 240" aria-hidden="true">${rostoInterno(e,i,fundo)}
+  <ellipse class="foco" cx="120" cy="100" rx="66" ry="33"/><ellipse class="foco" cx="120" cy="156" rx="46" ry="29"/></svg>`;
+}
+
+/* ---------- Ilustrações: situações do quotidiano ---------- */
+function crianca(x,y,t,i,e="neutro"){
+  const c=CRIANCAS[i];
+  return `<rect x="${x+t*.18}" y="${y+t*.88}" width="${t*.64}" height="${280-y-t*.88+4}" rx="12" fill="${c.roupa}"/>
+  <svg x="${x}" y="${y}" width="${t}" height="${t}" viewBox="0 0 240 240">${rostoInterno(e,i)}</svg>`;
+}
+const ROBO=`#6C7A99`;
+const CENAS={
+ tristeza:()=>`<rect width="400" height="280" fill="#DDE7F5"/><rect y="214" width="400" height="66" fill="#B4C4DC"/>
+   ${crianca(30,62,170,3)}
+   <g transform="translate(232 146)">
+     <rect x="0" y="40" width="58" height="58" rx="8" fill="${ROBO}" stroke="#14224A" stroke-width="3" transform="rotate(-10 30 70)"/>
+     <rect x="12" y="56" width="26" height="14" fill="#FFC93C" stroke="#14224A" stroke-width="2" transform="rotate(-10 30 70)"/>
+     <rect x="82" y="62" width="46" height="40" rx="8" fill="${ROBO}" stroke="#14224A" stroke-width="3" transform="rotate(24 100 80)"/>
+     <circle cx="96" cy="80" r="6" fill="#fff" stroke="#14224A" stroke-width="2"/><circle cx="114" cy="86" r="6" fill="#fff" stroke="#14224A" stroke-width="2"/>
+     <path d="M66 34L58 54L72 58L62 78" fill="none" stroke="#D8222E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+     <rect x="62" y="100" width="20" height="9" rx="3" fill="${ROBO}" stroke="#14224A" stroke-width="2" transform="rotate(30 72 104)"/>
+     <circle cx="20" cy="112" r="6" fill="${ROBO}" stroke="#14224A" stroke-width="2"/>
+   </g><ellipse class="foco" cx="298" cy="218" rx="94" ry="70"/>`,
+ calma:()=>`<rect width="400" height="280" fill="#E2F2E6"/><rect y="226" width="400" height="54" fill="#BFDCC6"/>
+   <rect x="262" y="24" width="112" height="104" rx="6" fill="#BFE4FA" stroke="#14224A" stroke-width="4"/><circle cx="318" cy="72" r="26" fill="#FFC93C"/><path d="M318 24V128M262 76H374" stroke="#14224A" stroke-width="3"/>
+   <path d="M322 226V176M322 190Q298 178 292 156M322 196Q346 186 352 162" stroke="#1F7A4B" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M302 226H342L336 262H308Z" fill="#B8612F" stroke="#14224A" stroke-width="3"/>
+   <ellipse cx="150" cy="256" rx="124" ry="22" fill="#6C8EDB" stroke="#14224A" stroke-width="3"/>
+   ${crianca(62,44,170,2,"neutro")}
+   <path d="M96 222L147 206V256L96 268Z" fill="#fff" stroke="#14224A" stroke-width="3" stroke-linejoin="round"/><path d="M198 222L147 206V256L198 268Z" fill="#F4F7FF" stroke="#14224A" stroke-width="3" stroke-linejoin="round"/>
+   <path d="M108 228L136 220M108 240L136 232M186 228L158 220M186 240L158 232" stroke="#4A5778" stroke-width="3"/>
+   <ellipse class="foco" cx="147" cy="236" rx="66" ry="42"/>`,
+ alegria:()=>`<rect width="400" height="280" fill="#FFEFC4"/><rect y="226" width="400" height="54" fill="#EBCB8B"/>
+   ${crianca(26,56,170,1)}
+   <path d="M176 200L230 188" stroke="${CRIANCAS[1].pele}" stroke-width="20" stroke-linecap="round"/>
+   <g stroke="#14224A" stroke-width="4" stroke-linejoin="round">
+    <rect x="222" y="132" width="146" height="116" rx="8" fill="#D8366A"/><rect x="214" y="112" width="162" height="34" rx="7" fill="#E9588A"/>
+    <rect x="280" y="112" width="28" height="136" fill="#FFC93C"/>
+    <path d="M294 110Q252 66 246 96Q244 116 294 110Q336 66 342 96Q344 116 294 110Z" fill="#FFC93C"/>
+   </g><ellipse class="foco" cx="296" cy="160" rx="96" ry="102"/>`,
+ zanga:()=>`<rect width="400" height="280" fill="#F7E3D9"/><rect y="226" width="400" height="54" fill="#DDBBA6"/>
+   ${crianca(4,66,158,0)}
+   <path d="M136 204L186 194" stroke="${CRIANCAS[0].pele}" stroke-width="18" stroke-linecap="round"/>
+   ${crianca(252,86,136,4)}
+   <path d="M274 212L250 200" stroke="${CRIANCAS[4].pele}" stroke-width="16" stroke-linecap="round"/>
+   <g stroke="#14224A" stroke-width="3.5" stroke-linejoin="round"><rect x="196" y="170" width="58" height="34" rx="5" fill="#E23D3D"/><rect x="178" y="182" width="24" height="22" rx="4" fill="#F4A62A"/><circle cx="192" cy="208" r="9" fill="#14224A"/><circle cx="238" cy="208" r="9" fill="#14224A"/></g>
+   <path d="M312 56H372M322 74H382M332 38H362" stroke="#14224A" stroke-width="5" stroke-linecap="round"/>
+   <ellipse class="foco" cx="216" cy="190" rx="58" ry="46"/>`,
+ medo:()=>`<rect width="400" height="280" fill="#2B3763"/><rect y="228" width="400" height="52" fill="#1C254A"/>
+   <rect x="216" y="18" width="164" height="136" rx="6" fill="#0E1533" stroke="#E7ECF8" stroke-width="5"/>
+   <path d="M244 58Q246 36 272 40Q284 22 310 34Q340 26 346 52Q362 58 352 70H250Q234 70 244 58Z" fill="#8D97B5"/>
+   <path d="M304 70L280 108H300L286 146L334 94H310L326 70Z" fill="#FFD83B" stroke="#14224A" stroke-width="2"/>
+   <path d="M206 44L186 30M200 84L174 84M206 124L186 138" stroke="#FFD83B" stroke-width="6" stroke-linecap="round"/>
+   ${crianca(30,68,162,5)}
+   <circle cx="50" cy="146" r="17" fill="${CRIANCAS[5].pele}" stroke="#14224A" stroke-width="2"/><circle cx="172" cy="146" r="17" fill="${CRIANCAS[5].pele}" stroke="#14224A" stroke-width="2"/>
+   <path d="M50 164L58 262M172 164L164 262" stroke="${CRIANCAS[5].pele}" stroke-width="18" stroke-linecap="round"/>
+   <ellipse class="foco" cx="298" cy="86" rx="98" ry="82"/>`
+};
+const cena=e=>`<svg viewBox="0 0 400 280" aria-hidden="true">${CENAS[e]()}</svg>`;
+
+/* ---------- Ilustrações: sensações do corpo ---------- */
+const F="#3D5A99";
+const figura=`<circle cx="100" cy="38" r="24" fill="${F}"/><path d="M62 200V92Q62 70 100 70Q138 70 138 92V200Z" fill="${F}"/>`;
+const SENSACOES={
+ coracao:{txt:"CORAÇÃO A BATER DEPRESSA",frase:"O CORAÇÃO A BATER DEPRESSA",svg:`${figura}<path d="M100 150Q60 118 74 98Q88 84 100 102Q112 84 126 98Q140 118 100 150Z" fill="#E2264D" stroke="#fff" stroke-width="3"/><path d="M38 96Q26 118 38 140M22 86Q4 118 22 150M162 96Q174 118 162 140M178 86Q196 118 178 150" stroke="#E2264D" stroke-width="5" fill="none" stroke-linecap="round"/>`},
+ barriga:{txt:"BARRIGA APERTADA",frase:"A BARRIGA APERTADA",svg:`${figura}<path d="M100 158c-24 0-30-30-8-34 16-3 22 18 8 20-9 1-11-9-5-11" fill="none" stroke="#FFC93C" stroke-width="7" stroke-linecap="round"/><path d="M28 132H52M42 120L54 132L42 144M172 132H148M158 120L146 132L158 144" stroke="#E2264D" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`},
+ descontraido:{txt:"CORPO DESCONTRAÍDO",frase:"O CORPO DESCONTRAÍDO",svg:`<circle cx="100" cy="36" r="24" fill="${F}"/><path d="M72 70H128Q134 70 134 80V140H66V80Q66 70 72 70Z" fill="${F}"/><path d="M78 138V192M122 138V192M70 78Q44 106 40 146M130 78Q156 106 160 146" stroke="${F}" stroke-width="18" fill="none" stroke-linecap="round"/><path d="M12 64Q26 54 40 64T68 64M132 64Q146 54 160 64T188 64" stroke="#17A38A" stroke-width="5" fill="none" stroke-linecap="round"/>`},
+ maos:{txt:"MÃOS APERTADAS",frase:"AS MÃOS APERTADAS",svg:`<g stroke="#14224A" stroke-width="4" fill="#E9B88E" stroke-linejoin="round"><path d="M18 180V116Q18 84 44 80H80Q94 82 94 102V134Q94 158 72 160V180Z"/><path d="M182 180V116Q182 84 156 80H120Q106 82 106 102V134Q106 158 128 160V180Z"/></g><path d="M44 80V106M62 80V106M80 82V106M156 80V106M138 80V106M120 82V106M30 126H72M170 126H128" stroke="#14224A" stroke-width="4" stroke-linecap="round"/><path d="M60 54L52 34M100 50V26M140 54L148 34" stroke="#E2264D" stroke-width="6" stroke-linecap="round"/>`},
+ chorar:{txt:"VONTADE DE CHORAR",frase:"VONTADE DE CHORAR",svg:`<circle cx="100" cy="92" r="72" fill="${F}"/><path d="M58 84Q72 96 86 84M114 84Q128 96 142 84M78 134Q100 112 122 134" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M66 102Q80 128 66 142Q52 128 66 102Z" fill="#66C3FF" stroke="#fff" stroke-width="2"/><path d="M134 102Q148 128 134 142Q120 128 134 102Z" fill="#66C3FF" stroke="#fff" stroke-width="2"/><path d="M66 164Q76 184 66 196Q56 184 66 164ZM134 164Q144 184 134 196Q124 184 134 164Z" fill="#3FA3E8"/>`},
+ saltar:{txt:"VONTADE DE SALTAR",frase:"VONTADE DE SALTAR",svg:`<circle cx="100" cy="36" r="22" fill="${F}"/><path d="M76 66H124L120 124H80Z" fill="${F}"/><path d="M78 74L46 28M122 74L154 28M86 120L62 150L72 170M114 120L138 150L128 170" stroke="${F}" stroke-width="16" fill="none" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="100" cy="190" rx="52" ry="6" fill="#A8B4CE"/><path d="M28 100V128M172 100V128M16 112L28 96L40 112M160 112L172 96L184 112" stroke="#F08A00" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`},
+ respirar:{txt:"RESPIRAÇÃO TRANQUILA",frase:"A RESPIRAÇÃO TRANQUILA",svg:`<circle cx="74" cy="42" r="26" fill="${F}"/><path d="M36 200V100Q36 76 74 76Q112 76 112 100V200Z" fill="${F}"/><path d="M58 112Q50 150 60 164Q76 166 72 112ZM90 112Q98 150 88 164Q72 166 76 112Z" fill="#9FE3D5"/><path d="M106 42Q130 28 148 42T190 42M106 62Q130 48 148 62T190 62M110 22Q130 8 148 22T186 22" stroke="#17A38A" stroke-width="5" fill="none" stroke-linecap="round"/>`},
+ tenso:{txt:"CORPO TENSO",frase:"O CORPO TENSO",svg:`<circle cx="100" cy="46" r="22" fill="${F}"/><path d="M58 66L142 66V140H58Z" fill="${F}"/><path d="M78 138V194M122 138V194M60 74V152M140 74V152" stroke="${F}" stroke-width="18" fill="none" stroke-linecap="butt"/><path d="M36 40L26 56L40 64L30 80L44 88L34 104M164 40L174 56L160 64L170 80L156 88L166 104" stroke="#E2264D" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`}
+};
+const corpo=k=>`<svg viewBox="0 0 200 204" aria-hidden="true"><rect width="200" height="204" fill="#F4F7FF"/>${SENSACOES[k].svg}</svg>`;
+const OPCOES_CORPO={tristeza:["chorar","barriga","saltar"],calma:["respirar","descontraido","tenso"],alegria:["saltar","coracao","maos"],zanga:["maos","tenso","respirar"],medo:["coracao","barriga","descontraido"]};
+
+/* ---------- Ilustrações: cadeados, baú, pictogramas ---------- */
+const COR_CAD=["#1F4FBF","#7E2A8C","#0B6E5F"];
+const CORPOS_CAD=[
+  `<circle cx="60" cy="86" r="42"/>`,
+  `<path d="M22 50H98V92Q98 118 60 134Q22 118 22 92Z"/>`,
+  `<path d="M60 134Q10 98 18 66Q28 40 60 62Q92 40 102 66Q110 98 60 134Z"/>`
+];
+function cadeado(n,aberto,cls=""){
+  const miolo=aberto?`<path d="M42 88L55 101L80 72" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>`
+    : n<2?`<circle cx="60" cy="82" r="9" fill="#fff"/><path d="M60 84V104" stroke="#fff" stroke-width="8" stroke-linecap="round"/>`
+         :`<circle cx="60" cy="80" r="9" fill="#fff"/><path d="M60 82V102" stroke="#fff" stroke-width="8" stroke-linecap="round"/>`;
+  return `<svg class="cad ${aberto?"aberto":""} ${cls}" viewBox="-12 -36 144 180" aria-hidden="true">
+    <g class="arco"><path d="M36 58V34Q36 10 60 10Q84 10 84 34V58" fill="none" stroke="#14224A" stroke-width="14"/><path d="M36 58V34Q36 10 60 10Q84 10 84 34V58" fill="none" stroke="#C8D0E2" stroke-width="7"/></g>
+    <g fill="${aberto?"#0B7A4B":COR_CAD[n]}" stroke="#14224A" stroke-width="5" stroke-linejoin="round">${CORPOS_CAD[n]}</g>${miolo}</svg>`;
+}
+function bau(abertos,cls=""){
+  const fechos=[0,1,2].map(n=>{const x=104+n*100;return `<svg x="${x}" y="172" width="72" height="90" viewBox="-12 -36 144 180"><g class="cad ${abertos>n?"aberto":""}">${cadeado(n,abertos>n).replace(/^<svg[^>]*>/,"").replace(/<\/svg>$/,"")}</g></svg>`}).join("");
+  const faces=["alegria","tristeza","medo","zanga","calma"].map((e,i)=>`<svg x="${72+i*72}" y="${[38,12,0,12,38][i]}" width="66" height="66" viewBox="0 0 240 240"><circle cx="120" cy="120" r="118" fill="#FFF7D6" stroke="#14224A" stroke-width="7"/><g transform="translate(24 24) scale(.8)">${rostoInterno(e,i)}</g></svg>`).join("");
+  return `<svg class="bau ${cls}" viewBox="0 0 480 340" role="img" aria-label="Baú com três cadeados">
+   <ellipse cx="240" cy="322" rx="214" ry="14" fill="#14224A" opacity=".18"/>
+   <g class="tesouro"><path d="M60 170L20 40M420 170L460 40M150 150L130 10M330 150L350 10" stroke="#FFC93C" stroke-width="10" stroke-linecap="round"/><ellipse cx="240" cy="150" rx="170" ry="34" fill="#FFE27A"/>${faces}</g>
+   <rect x="46" y="146" width="388" height="170" rx="10" fill="#7A4322" stroke="#14224A" stroke-width="6"/>
+   <path d="M46 196H434M46 276H434" stroke="#5B2F15" stroke-width="5"/>
+   <rect x="82" y="146" width="24" height="170" fill="#D9A42B" stroke="#14224A" stroke-width="4"/><rect x="374" y="146" width="24" height="170" fill="#D9A42B" stroke="#14224A" stroke-width="4"/>
+   <g class="tampa"><path d="M46 146V110Q46 44 120 44H360Q434 44 434 110V146Z" fill="#94552C" stroke="#14224A" stroke-width="6" stroke-linejoin="round"/><path d="M50 106H430" stroke="#5B2F15" stroke-width="5"/><rect x="82" y="44" width="24" height="102" fill="#D9A42B" stroke="#14224A" stroke-width="4"/><rect x="374" y="44" width="24" height="102" fill="#D9A42B" stroke="#14224A" stroke-width="4"/></g>
+   <rect x="90" y="170" width="300" height="96" rx="16" fill="#F3D98A" stroke="#14224A" stroke-width="4"/>
+   ${fechos}</svg>`;
+}
+const P={
+ olho:`<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M6 50Q50 4 94 50Q50 96 6 50Z" fill="#fff" stroke="#14224A" stroke-width="6"/><circle cx="50" cy="50" r="20" fill="#1F4FBF"/><circle cx="50" cy="50" r="9" fill="#14224A"/></svg>`,
+ mao:`<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M38 52V16Q38 8 46 8Q54 8 54 16V44L78 50Q88 52 86 64L80 92H42L20 66Q16 58 24 54Q30 52 38 60Z" fill="#FFC93C" stroke="#14224A" stroke-width="6" stroke-linejoin="round"/></svg>`,
+ cad:`<svg viewBox="0 0 120 120" aria-hidden="true"><path d="M36 54V34Q36 12 60 12Q84 12 84 34V40" fill="none" stroke="#14224A" stroke-width="10"/><rect x="20" y="54" width="80" height="58" rx="10" fill="#0B7A4B" stroke="#14224A" stroke-width="6"/><circle cx="60" cy="80" r="9" fill="#fff"/></svg>`,
+ som:`<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 12V20H10L18 27V5L10 12Z" fill="#14224A"/><path d="M22 11Q26 16 22 21M25 7Q32 16 25 25" fill="none" stroke="#14224A" stroke-width="2.6" stroke-linecap="round"/></svg>`,
+ pausa:`<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="7" y="5" width="7" height="22" rx="2" fill="#14224A"/><rect x="18" y="5" width="7" height="22" rx="2" fill="#14224A"/></svg>`,
+ ajuda:`<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3A9 9 0 0 0 11 19.5V23H21V19.5A9 9 0 0 0 16 3Z" fill="#fff" stroke="#14224A" stroke-width="2.4"/><path d="M12 27H20M13 30.5H19" stroke="#14224A" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+ chave:`<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="14" cy="24" r="10" fill="none" stroke="#14224A" stroke-width="6"/><path d="M24 24H44M36 24V34M44 24V32" stroke="#14224A" stroke-width="6" stroke-linecap="round"/></svg>`,
+ estrela:`<svg viewBox="0 0 100 100" class="fb-estrela" aria-hidden="true"><path d="M50 6L63 36L96 39L71 61L79 94L50 76L21 94L29 61L4 39L37 36Z" fill="#FFC93C" stroke="#14224A" stroke-width="5" stroke-linejoin="round"/></svg>`,
+ visto:`<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#0B7A4B"/><path d="M11 21L18 28L30 13" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+};
+
+/* ---------- Voz e sons ---------- */
+const Audio_={
+  ligado:CONFIG.somLigado, voz:null, disponivel:"speechSynthesis" in window, ctx:null,
+  escolher(){ if(!this.disponivel)return; const v=speechSynthesis.getVoices();
+    this.voz=v.find(x=>/^pt[-_]PT/i.test(x.lang))||v.find(x=>/^pt/i.test(x.lang))||null; },
+  falar(t){ if(!this.ligado||!this.disponivel||!t)return; if(!this.voz)this.escolher(); if(!this.voz&&speechSynthesis.getVoices().length)return;
+    speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t.toLowerCase()); u.lang=this.voz?this.voz.lang:"pt-PT"; if(this.voz)u.voice=this.voz; u.rate=.88; speechSynthesis.speak(u); },
+  parar(){ if(this.disponivel)speechSynthesis.cancel(); },
+  tom(notas){ if(!this.ligado)return; try{ this.ctx=this.ctx||new (window.AudioContext||window.webkitAudioContext)();
+    notas.forEach((f,i)=>{const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.frequency.value=f;o.type="sine";const t=this.ctx.currentTime+i*.13;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.14,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+.28);o.connect(g).connect(this.ctx.destination);o.start(t);o.stop(t+.3)}); }catch(e){} }
+};
+if(Audio_.disponivel){Audio_.escolher();speechSynthesis.addEventListener&&speechSynthesis.addEventListener("voiceschanged",()=>Audio_.escolher());}
+
+/* ---------- Estado do jogo ---------- */
+const novoCad=()=>({tempo:0,inicio:null,tentPerguntas:0,tentCodigo:0,pistas:0,aberto:false,fichas:[],detalhe:[]});
+const E={
+  id:"", aluno:null, inicioData:null, acumulado:0, marca:null, intervalo:null, seq:0,
+  cadAtual:0, q:0, parte:"A", respostasEmocao:{}, respostasCorpo:{},
+  cad:[novoCad(),novoCad(),novoCad()], tentativasAtual:0
+};
+const agora=()=>E.acumulado+(E.marca?performance.now()-E.marca:0);
+const fmt=ms=>{const s=Math.round(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
+function iniciarRelogio(){ if(E.marca)return; E.marca=performance.now(); E.intervalo=setInterval(()=>{$("#relogio").textContent=fmt(agora())},1000); }
+function pararRelogio(){ if(!E.marca)return; E.acumulado=agora(); E.marca=null; clearInterval(E.intervalo); }
+const totTent=()=>E.cad.reduce((a,c)=>a+c.tentPerguntas+c.tentCodigo,0);
+const totPistas=()=>E.cad.reduce((a,c)=>a+c.pistas,0);
+const totAbertos=()=>E.cad.filter(c=>c.aberto).length;
+const regra=n=>JSON.parse(desofuscar(CONFIG["cadeado"+(n+1)].regra));
+function fichaDe(n,emo){
+  const r=regra(n)[emo];
+  if(n===2)return NOME[emo][r-1];
+  return r;
+}
+
+/* ---------- Palco ---------- */
+function mostrar(html,foco){
+  Audio_.parar();
+  $("#palco").innerHTML=html; window.scrollTo(0,0);
+  atualizarBarra();
+  if(foco){const f=$(foco);if(f){f.setAttribute("tabindex","-1");f.focus({preventScroll:true})}}
+}
+function atualizarBarra(){
+  $("#progresso").innerHTML=[0,1,2].map(n=>{const c=E.cad[n];const cl=c.aberto?"feito":(n===E.cadAtual?"atual":"");
+    return `<li class="${cl}" aria-label="Cadeado ${n+1}: ${c.aberto?"aberto":"fechado"}"><div class="mini">${cadeado(n,c.aberto)}</div>${n<2?'<div class="elo"></div>':""}</li>`}).join("");
+}
+function anunciar(t){$("#anuncio").textContent=t}
+
+/* ---------- Ecrã inicial ---------- */
+function ecraInicio(){
+  $("#barra").classList.remove("ativa");
+  mostrar(`<section class="inicio">
+    <div>
+      <h1>A VIAGEM AO MUNDO DAS EMOÇÕES</h1>
+      <p class="missao">Este baú misterioso tem três cadeados. Supera os desafios e descobre o tesouro!</p>
+      <ul class="passos">
+        <li>${P.olho}OBSERVA</li><li>${P.mao}ESCOLHE</li><li>${P.cad}ABRE</li>
+      </ul>
+      <button class="btn" id="comecar" type="button">COMEÇAR A MISSÃO</button>
+    </div>
+    <div>${bau(0)}</div>
+  </section>`);
+  $("#comecar").onclick=ecraForm;
+}
+function ecraForm(){
+  mostrar(`<form class="form painel" id="f" novalidate>
+    <h2 id="tf">Quem vai entrar na missão?</h2>
+    ${campo("nome","Nome do aluno","text","name")}
+    ${campo("turma","Turma","text","off")}
+    ${campo("numero","Número","text","off",'inputmode="numeric"')}
+    <button class="btn" type="submit">ENTRAR NO MUNDO DAS EMOÇÕES</button>
+  </form>`,"#tf");
+  $("#f").onsubmit=ev=>{ev.preventDefault();validarForm()};
+}
+const campo=(id,rot,tipo,auto,extra="")=>`<div class="campo"><label for="${id}">${rot}</label><input id="${id}" type="${tipo}" autocomplete="${auto}" aria-describedby="e-${id}" ${extra}><p class="erro" id="e-${id}"></p></div>`;
+function validarForm(){
+  const v={nome:$("#nome").value.trim().replace(/\s+/g," "),turma:$("#turma").value.trim(),numero:$("#numero").value.trim()};
+  const erros={
+    nome:!v.nome?"Escreve o nome do aluno.":!/^[\p{L}][\p{L}\s.'’-]{1,59}$/u.test(v.nome)?"Escreve o nome só com letras (pelo menos 2).":"",
+    turma:!v.turma?"Escreve a turma.":!/^[\p{L}\d][\p{L}\d\s.ºª°-]{0,11}$/u.test(v.turma)?"Escreve a turma com letras e números. Exemplo: 5.º A":"",
+    numero:!v.numero?"Escreve o número.":!(/^\d{1,2}$/.test(v.numero)&&+v.numero>=1)?"Escreve um número de 1 a 99.":""
+  };
+  let primeiro=null;
+  for(const k in erros){$("#e-"+k).textContent=erros[k];$("#"+k).setAttribute("aria-invalid",erros[k]?"true":"false");if(erros[k]&&!primeiro)primeiro=k}
+  if(primeiro){$("#"+primeiro).focus();return}
+  v.numero=String(+v.numero);
+  E.aluno=v; E.id=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8);
+  $("#barra").classList.add("ativa");
+  if(!CONFIG.mostrarCronometro)$("#relogio").style.display="none";
+  ecraHub();
+}
+
+/* ---------- Baú entre cadeados ---------- */
+function ecraHub(recem){
+  const n=E.cadAtual;
+  const titulos=["DESCOBRIR AS EMOÇÕES","QUANDO E PORQUE SENTIMOS?","COMO SE CHAMA ESTA EMOÇÃO?"];
+  const msg=recem?`MUITO BEM! ABRISTE O CADEADO ${n}!`:`OLÁ, ${esc(E.aluno.nome.toUpperCase())}! ABRE OS TRÊS CADEADOS.`;
+  mostrar(`<section class="ecra hub"><h2 id="th">${msg}</h2>
+    <div class="bau-grande">${bau(totAbertos())}</div>
+    <p style="font-weight:600">CADEADO ${n+1}: ${titulos[n]}</p>
+    <button class="btn" id="ir" type="button">${cadeadoIcone(n)} VAMOS AO CADEADO ${n+1}</button></section>`,"#th");
+  Audio_.falar((recem?`Muito bem! Abriste o cadeado ${n}. `:"O baú tem três cadeados. ")+`Vamos ao cadeado ${n+1}: ${titulos[n]}`);
+  $("#ir").onclick=()=>{ iniciarCadeado(n); };
+}
+const cadeadoIcone=n=>`<span style="width:30px;display:inline-block">${cadeado(n,false)}</span>`;
+function iniciarCadeado(n){
+  iniciarRelogio();
+  if(!E.inicioData){E.inicioData=new Date();enviarProgresso("Em curso")}
+  E.cad[n].inicio=agora(); E.q=0; E.parte="A"; ecraPergunta();
+}
+
+/* ---------- Perguntas ---------- */
+const DISTRATORES={
+  0:{alegria:["tristeza","medo"],medo:["alegria","calma"],tristeza:["alegria","zanga"],calma:["medo","zanga"],zanga:["alegria","calma"]},
+  1:{tristeza:["alegria","calma"],calma:["zanga","medo"],alegria:["tristeza","medo"],zanga:["calma","alegria"],medo:["alegria","calma"]},
+  2:{medo:["alegria","tristeza"],calma:["zanga","medo"],zanga:["alegria","calma"],tristeza:["alegria","medo"],alegria:["medo","zanga"]}
+};
+const FALAS={
+  c1:"Olha para este rosto. Escolhe o rosto que mostra a mesma emoção.",
+  c2a:"Olha para o que aconteceu. Como poderá sentir-se esta criança?",
+  c2b:"Como poderá sentir-se o corpo?",
+  c3:"Como se chama esta emoção?"
+};
+const PISTAS={
+  c1:"OBSERVA BEM OS OLHOS E A BOCA. O QUE TE DIZEM?",
+  c2a:"PENSA NO QUE ACONTECEU À CRIANÇA. COMO PODERÁ SENTIR-SE?",
+  c2b:"CADA CORPO SENTE À SUA MANEIRA. O TEU CORPO PODE SENTIR ISTO?",
+  c3:"OBSERVA A EXPRESSÃO FACIAL E PROCURA A PALAVRA QUE CORRESPONDE AO ROSTO.",
+  numero:"OLHA PARA OS NÚMEROS QUE GANHASTE. ESCREVE-OS PELA MESMA ORDEM.",
+  palavra:"OLHA PARA AS LETRAS QUE GANHASTE. JUNTA-AS PELA MESMA ORDEM."
+};
+const pictoInstrucao=`<div class="pictos" aria-hidden="true">${P.olho}${P.mao}</div>`;
+
+function fichasHTML(n,novaIdx=-1){
+  return `<ol class="fichas" id="fichas" aria-label="Conquistas">`+[0,1,2,3,4].map(i=>{
+    const v=E.cad[n].fichas[i];
+    if(v===undefined)return `<li class="ficha"></li>`;
+    return `<li class="ficha ganha ${i===novaIdx?"nova":""}">${v==="K"?P.chave:esc(v)}</li>`}).join("")+`</ol>`;
+}
+function ecraPergunta(){
+  const n=E.cadAtual, emo=CONFIG["cadeado"+(n+1)].ordem[E.q];
+  E.tentativasAtual=0;
+  let topo,alvo,opc,chaveFala,chavePista;
+  const crAlvo=E.q%CRIANCAS.length, crOpc=(E.q+2+n)%CRIANCAS.length;
+  const lista=baralhar([emo,...DISTRATORES[n][emo]]);
+  if(n===0){
+    topo=pictoInstrucao; chaveFala=chavePista="c1";
+    alvo=rosto(emo,crAlvo);
+    opc=`<div class="opcoes">`+lista.map((e,i)=>`<button class="opcao" type="button" data-v="${i}" aria-label="Rosto ${i+1}">${rosto(e,crOpc,"#F4F7FF")}</button>`).join("")+`</div>`;
+  }else if(n===1&&E.parte==="A"){
+    topo=`<h2 id="tq">COMO PODERÁ SENTIR-SE ESTA CRIANÇA?</h2>`; chaveFala=chavePista="c2a";
+    alvo=cena(emo);
+    opc=`<div class="opcoes">`+lista.map((e,i)=>`<button class="opcao" type="button" data-v="${i}" aria-label="Rosto ${i+1}">${rosto(e,crOpc,"#F4F7FF")}</button>`).join("")+`</div>`;
+  }else if(n===1){
+    topo=`<h2 id="tq">COMO PODERÁ SENTIR-SE O CORPO?</h2>`; chaveFala=chavePista="c2b";
+    alvo=cena(emo);
+    const ops=baralhar(OPCOES_CORPO[emo]);
+    opc=`<div class="opcoes">`+ops.map(k=>`<button class="opcao" type="button" data-corpo="${k}">${corpo(k)}<span>${SENSACOES[k].txt}</span></button>`).join("")+`</div>`;
+  }else{
+    topo=`<h2 id="tq">COMO SE CHAMA ESTA EMOÇÃO?</h2>`; chaveFala=chavePista="c3";
+    alvo=rosto(emo,crAlvo);
+    opc=`<div class="opcoes palavras">`+lista.map((e,i)=>`<button class="opcao palavra" type="button" data-v="${i}">${NOME[e]}</button>`).join("")+`</div>`;
+  }
+  const textoVoz=n===2?`${FALAS.c3} ${lista.map(e=>NOME[e]).join(", ")}.`:FALAS[chaveFala];
+  mostrar(`<section class="ecra">
+    <div class="topo">${topo}</div>
+    <div class="pista" id="pista" role="status">${P.ajuda}<span></span></div>
+    <div class="pergunta">
+      <div class="alvo" id="alvo">${alvo}</div>
+      <div>${opc}<div class="aviso" id="aviso" role="status"></div></div>
+    </div>
+    <div class="rodape">${fichasHTML(n)}
+      <div class="acoes">
+        <button class="btn claro pequeno" type="button" id="ouvir">${P.som} OUVIR</button>
+        <button class="btn claro pequeno" type="button" id="ajuda">${P.ajuda} PRECISO DE AJUDA</button>
+      </div></div></section>`, n===0?null:"#tq");
+  $("#ouvir").onclick=()=>Audio_.falar(textoVoz);
+  $("#ajuda").onclick=()=>usarPista(chavePista);
+  if(CONFIG.lerAutomaticamente)Audio_.falar(textoVoz);
+  document.querySelectorAll(".opcao").forEach(b=>{
+    b.onclick=()=>{
+      if(b.dataset.corpo){respostaCorpo(emo,b.dataset.corpo);return}
+      responder(emo,lista[+b.dataset.v],b);
+    };
+  });
+}
+function usarPista(chave){
+  E.cad[E.cadAtual].pistas++;
+  const box=$("#pista");box.querySelector("span").textContent=PISTAS[chave];box.classList.add("ver");
+  const alvo=$("#alvo");if(alvo)alvo.classList.add("com-pista");
+  const f=$("#fichas");if(f&&(chave==="numero"||chave==="palavra"))f.classList.add("brilha");
+  Audio_.falar(PISTAS[chave]);
+}
+function responder(emo,escolha,botao){
+  const n=E.cadAtual,c=E.cad[n];
+  c.tentPerguntas++; E.tentativasAtual++;
+  if(n===1)(E.respostasEmocao[emo]=E.respostasEmocao[emo]||[]).push(NOME[escolha]);
+  if(escolha!==emo){
+    botao.classList.remove("abana");void botao.offsetWidth;botao.classList.add("abana");
+    const a=$("#aviso");a.classList.add("ver");
+    a.textContent=n===1?"TAMBÉM PODE SER! CADA PESSOA SENTE À SUA MANEIRA. VAMOS OBSERVAR NOVAMENTE!":"VAMOS OBSERVAR NOVAMENTE!";
+    Audio_.falar(a.textContent);
+    if(E.tentativasAtual>=2)$("#ajuda").classList.add("abana");
+    return;
+  }
+  
+  c.detalhe.push(`${NOME[emo]}: ${E.tentativasAtual}`);
+  Audio_.tom([523,659,784]);
+  if(n===0){
+    const f=fichaDe(0,emo);c.fichas.push(f);
+    feedback({msg:"MUITO BEM! DESCOBRISTE A EMOÇÃO!",ficha:f,seguir:proxima});
+  }else if(n===1){
+    feedback({msg:`MUITO BEM! ESTA CRIANÇA PODE SENTIR ${NOME[emo]}.`,extra:"OUTRA PESSOA PODE SENTIR DE OUTRA MANEIRA.",seguir:()=>{E.parte="B";ecraPergunta()}});
+  }else{
+    const f=fichaDe(2,emo);c.fichas.push(f);
+    const pos=regra(2)[emo]-1;
+    const pal=[...NOME[emo]].map((l,i)=>i===pos?`<span class="letra">${l}</span>`:l).join("");
+    feedback({msg:"MUITO BEM!",palavra:pal,falaExtra:`Esta emoção chama-se ${NOME[emo]}.`,ficha:f,seguir:proxima});
+  }
+}
+function respostaCorpo(emo,k){
+  const c=E.cad[1];
+  E.respostasCorpo[emo]=SENSACOES[k].txt;
+  const f=fichaDe(1,emo);c.fichas.push(f);
+  Audio_.tom([523,659,784]);
+  feedback({msg:`PODES SENTIR ${SENSACOES[k].frase}.`,extra:"O TEU CORPO PODE MOSTRAR AS EMOÇÕES DE MANEIRAS DIFERENTES.",ficha:f,seguir:proxima});
+}
+function proxima(){
+  E.q++; E.parte="A";
+  if(E.q>=5)ecraFecho(); else ecraPergunta();
+}
+function feedback({msg,extra,palavra,falaExtra,ficha,seguir}){
+  const d=$("#dialogo");
+  const ganho=ficha===undefined?"":`<div class="fb-ganho"><span class="ficha ganha nova">${ficha==="K"?P.chave:esc(ficha)}</span></div>`;
+  d.innerHTML=`${P.estrela}<p class="fb-msg">${msg}</p>${palavra?`<p class="fb-palavra">${palavra}</p>`:""}${extra?`<p class="fb-extra">${extra}</p>`:""}${ganho}<button class="btn" id="seguir" type="button">CONTINUAR</button>`;
+  d.showModal();
+  Audio_.falar([msg,falaExtra,extra].filter(Boolean).join(" "));
+  $("#seguir").onclick=()=>{d.close();seguir()};
+}
+
+/* ---------- Fecho de cada cadeado ---------- */
+function ecraFecho(){
+  const n=E.cadAtual,num=n<2;
+  const teclas=num?["1","2","3","4","5","6","7","8","9","0"]:"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const texto=num?"ESCREVE OS NÚMEROS QUE GANHASTE":"JUNTA AS LETRAS QUE GANHASTE";
+  mostrar(`<section class="ecra"><div class="topo"><h2 id="tq">${texto}</h2></div>
+    <div class="pista" id="pista" role="status">${P.ajuda}<span></span></div>
+    <div class="fecho">
+      <div class="grande" id="fig">${cadeado(n,false)}</div>
+      <form id="fc" novalidate>
+        ${fichasHTML(n)}
+        <label for="visor" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">Código do cadeado</label>
+        <input class="visor" id="visor" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="none" maxlength="${num?4:12}" style="margin-top:12px">
+        <div class="teclado ${num?"num":"alfa"}">
+          ${teclas.map(t=>`<button class="tecla" type="button" data-t="${t}">${t}</button>`).join("")}
+          <button class="tecla apagar" type="button" data-apagar="1">APAGAR</button>
+        </div>
+        <div class="aviso" id="aviso" role="status"></div>
+        <div class="acoes" style="justify-content:space-between">
+          <button class="btn" type="submit">${P.cad} ABRIR</button>
+          <span class="acoes"><button class="btn claro pequeno" type="button" id="ouvir">${P.som} OUVIR</button>
+          <button class="btn claro pequeno" type="button" id="ajuda">${P.ajuda} PRECISO DE AJUDA</button></span>
+        </div>
+      </form></div></section>`,"#tq");
+  const v=$("#visor");
+  v.oninput=()=>{v.value=num?v.value.replace(/\D/g,"").slice(0,4):v.value};
+  document.querySelectorAll(".tecla").forEach(b=>b.onclick=()=>{
+    if(b.dataset.apagar)v.value=v.value.slice(0,-1);
+    else if(v.value.length<+v.maxLength)v.value+=b.dataset.t;
+  });
+  const fala=num?"Escreve os números que ganhaste, pela mesma ordem. Depois, carrega em abrir.":"Junta as letras que ganhaste, pela mesma ordem. Depois, carrega em abrir.";
+  $("#ouvir").onclick=()=>Audio_.falar(fala);
+  $("#ajuda").onclick=()=>usarPista(num?"numero":"palavra");
+  $("#fc").onsubmit=ev=>{ev.preventDefault();tentarCodigo()};
+  Audio_.falar(fala);
+}
+function tentarCodigo(){
+  const n=E.cadAtual,c=E.cad[n],v=$("#visor"),a=$("#aviso");
+  if(!normalizar(v.value)){a.classList.add("ver");a.textContent=n<2?"ESCREVE OS NÚMEROS PRIMEIRO.":"ESCREVE AS LETRAS PRIMEIRO.";return}
+  c.tentCodigo++;
+  if(normalizar(v.value)===normalizar(desofuscar(CONFIG["cadeado"+(n+1)].codigo))){
+    c.aberto=true; c.tempo=agora()-c.inicio;
+    $("#fig").innerHTML=cadeado(n,false);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{const s=$("#fig svg");s.classList.add("aberto");s.querySelector("g[fill]").setAttribute("fill","#0B7A4B")}));
+    a.classList.add("ver");a.textContent=`O CADEADO ${n+1} ABRIU!`;
+    Audio_.tom([392,523,659,784]);Audio_.falar(`O cadeado ${n+1} abriu!`);
+    document.querySelectorAll("#fc button,#fc input").forEach(x=>x.disabled=true);
+    E.cadAtual=n+1;
+    if(n===2){pararRelogio();E.fim=true;$("#btn-pausa").style.display="none"}
+    enviarProgresso(n===2?"Concluído":"Em curso");
+    setTimeout(()=>{ if(n===2)ecraFinal(); else ecraHub(true); },1900);
+  }else{
+    const f=$("#fig");f.classList.remove("abana-forte");void f.offsetWidth;f.classList.add("abana-forte");
+    a.classList.add("ver");a.textContent=n<2?"QUASE! VAMOS OLHAR OUTRA VEZ PARA OS NÚMEROS.":"QUASE! VAMOS OLHAR OUTRA VEZ PARA AS LETRAS.";
+    Audio_.falar(a.textContent);
+  }
+}
+
+/* ---------- Ecrã final ---------- */
+function ecraFinal(){
+  const hoje=new Date().toLocaleDateString("pt-PT",{day:"numeric",month:"long",year:"numeric"});
+  const t=fmt(E.acumulado), al=E.aluno;
+  mostrar(`<section class="ecra final">
+    <h1 id="tf">PARABÉNS! CONSEGUISTE ABRIR O BAÚ DAS EMOÇÕES!</h1>
+    <div style="width:min(520px,92vw);margin:0 auto" id="bau-final">${bau(3)}</div>
+    <p class="tesouro-txt">O conhecimento das minhas emoções!</p>
+    <div class="colunas">
+      <div class="painel"><ul class="aprendi">
+        <li>${P.visto}Aprendi a reconhecer emoções.</li>
+        <li>${P.visto}Percebi que as situações do quotidiano podem provocar diferentes emoções.</li>
+        <li>${P.visto}Descobri que o meu corpo também pode mostrar o que sinto.</li>
+        <li>${P.visto}Aprendi a associar as palavras às emoções.</li>
+      </ul></div>
+      <div class="painel"><dl class="dados">
+        <dt>Nome</dt><dd>${esc(al.nome)}</dd><dt>Turma</dt><dd>${esc(al.turma)}</dd><dt>Número</dt><dd>${esc(al.numero)}</dd>
+        <dt>Tempo total</dt><dd>${t}</dd><dt>Cadeados concluídos</dt><dd>${totAbertos()} de 3</dd>
+        <dt>Tentativas</dt><dd>${totTent()}</dd><dt>Pistas utilizadas</dt><dd>${totPistas()}</dd>
+      </dl></div>
+    </div>
+    <div class="painel" id="estado-envio" role="status"></div>
+    <article class="certificado" id="certificado">
+      <h2>EXPLORADOR DO MUNDO DAS EMOÇÕES</h2>
+      <div>${bau(3,"aberto")}</div>
+      <p class="quem">${esc(al.nome)}</p>
+      <div class="cert-info"><span>Data: <b>${hoje}</b></span><span>Tempo de realização: <b>${t}</b></span></div>
+      <p class="assinatura">Assinatura do professor</p>
+    </article>
+    <div class="acoes" style="justify-content:center">
+      <button class="btn" type="button" id="imprimir">IMPRIMIR CERTIFICADO</button>
+      <button class="btn claro" type="button" id="novo">NOVO ALUNO</button>
+    </div>
+  </section>`,"#tf");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>$("#bau-final svg").classList.add("aberto")));
+  $("#imprimir").onclick=()=>window.print();
+  $("#novo").onclick=()=>location.reload();
+  Audio_.tom([523,659,784,1047]);
+  Audio_.falar("Parabéns! Conseguiste abrir o baú das emoções! O tesouro é o conhecimento das minhas emoções!");
+  confete();
+  $("#barra").classList.add("ativa");
+  desenharEstadoEnvio();
+}
+function confete(){
+  const c=document.createElement("div");c.className="confete";
+  const cores=["#FFC93C","#1F4FBF","#7E2A8C","#0B6E5F","#E2264D"];
+  for(let i=0;i<40;i++){const p=document.createElement("i");p.style.left=Math.random()*100+"%";p.style.background=cores[i%5];p.style.animationDelay=Math.random()*1.2+"s";c.appendChild(p)}
+  document.body.appendChild(c);setTimeout(()=>c.remove(),5000);
+}
+
+/* ---------- Pausa e som ---------- */
+function pausar(){
+  pararRelogio();Audio_.parar();
+  const d=$("#dialogo");
+  d.innerHTML=`<p class="fb-msg">PAUSA</p><p class="fb-extra">O tempo está parado.</p><button class="btn" id="retomar" type="button">CONTINUAR</button>`;
+  d.showModal();
+  $("#retomar").onclick=()=>d.close();
+  d.addEventListener("close",()=>{ if(E.inicioData&&!E.fim)iniciarRelogio() },{once:true});
+}
+
+/* ---------- Envio para a Folha de Cálculo ---------- */
+const CHAVE_FILA="emocoes_fila_v1";
+let estadoEnvio="";
+function lerFila(){try{return JSON.parse(localStorage.getItem(CHAVE_FILA))||{}}catch(e){return memoFila}}
+let memoFila={};
+function gravarFila(f){memoFila=f;try{localStorage.setItem(CHAVE_FILA,JSON.stringify(f))}catch(e){}}
+function dadosAtuais(estado){
+  const [a,b,c]=E.cad;
+  const s=x=>Math.round(x/1000);
+  const tempoDe=z=>z.aberto?s(z.tempo):"";
+  const d={
+    "ID da sessão":E.id,"Sequência":++E.seq,"Início":E.inicioData?E.inicioData.toLocaleString("pt-PT"):"","Fim":estado==="Concluído"?new Date().toLocaleString("pt-PT"):"",
+    "Estado":estado,"Nome":E.aluno.nome,"Turma":E.aluno.turma,"Número":E.aluno.numero,
+    "Cadeados concluídos":totAbertos(),"Tempo total (mm:ss)":fmt(agora()),"Tempo total (s)":s(agora()),"Total de tentativas":totTent(),"Total de pistas":totPistas()
+  };
+  [a,b,c].forEach((z,i)=>{const p="C"+(i+1)+" ";d[p+"tempo (s)"]=tempoDe(z);d[p+"tentativas nas perguntas"]=z.tentPerguntas;d[p+"tentativas no código"]=z.tentCodigo;d[p+"pistas"]=z.pistas;d[p+"tentativas por emoção"]=z.detalhe.join("; ")});
+  ["alegria","tristeza","medo","zanga","calma"].forEach(e=>{
+    d["C2 emoção escolhida: "+NOME[e]]=(E.respostasEmocao[e]||[]).join(" > ");
+    d["C2 corpo escolhido: "+NOME[e]]=E.respostasCorpo[e]||"";
+  });
+  return d;
+}
+function enviarProgresso(estado){
+  const d=dadosAtuais(estado);E.ultimo=d;
+  if(!CONFIG.urlFolha){estadoEnvio="porconfigurar";desenharEstadoEnvio();return}
+  const f=lerFila();f[E.id]=d;gravarFila(f);processarFila();
+}
+let aEnviar=false;
+async function processarFila(){
+  if(aEnviar||!CONFIG.urlFolha)return;
+  aEnviar=true;
+  try{
+    let f=lerFila(),ids=Object.keys(f);
+    if(ids.length){estadoEnvio="aenviar";desenharEstadoEnvio()}
+    let falhou=false;
+    for(const id of ids){
+      const enviado=f[id];
+      const r=await enviarUm(enviado);
+      if(r==="falhou"){falhou=true;continue}
+      estadoEnvio=r;
+      f=lerFila();
+      if(f[id]&&f[id]["Sequência"]===enviado["Sequência"]){delete f[id];gravarFila(f)}
+    }
+    if(falhou)estadoEnvio="falhou";
+    const resta=Object.keys(lerFila()).length;
+    aEnviar=false;
+    if(!falhou&&resta)return processarFila();
+  }finally{aEnviar=false;desenharEstadoEnvio()}
+}
+async function enviarUm(d){
+  const corpo_=JSON.stringify(d);
+  const op={method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:corpo_,redirect:"follow"};
+  try{
+    const res=await fetch(CONFIG.urlFolha,op);
+    const j=await res.json();
+    return j&&j.ok?"enviado":"falhou";
+  }catch(e){
+    // Se a resposta não puder ser lida, tenta sem confirmação. O script não duplica linhas.
+    try{await fetch(CONFIG.urlFolha,{...op,mode:"no-cors"});return "semconfirmacao"}catch(e2){return "falhou"}
+  }
+}
+function desenharEstadoEnvio(){
+  const el=$("#estado-envio");if(!el)return;
+  const txt={aenviar:"A enviar os resultados…",enviado:"Resultados enviados para a folha do professor.",
+    semconfirmacao:"Resultados enviados. Professor, confirma se a linha aparece na folha.",
+    falhou:"Os resultados ainda não chegaram à folha. Ficam guardados neste aparelho.",
+    porconfigurar:"Falta ligar o jogo à folha do professor. Guarda os resultados neste ficheiro."}[estadoEnvio]||"";
+  el.innerHTML=`<span>${txt}</span>`+(estadoEnvio==="falhou"?`<button class="btn claro pequeno" type="button" id="retentar">TENTAR NOVAMENTE</button>`:"")+
+    (["falhou","porconfigurar","semconfirmacao"].includes(estadoEnvio)?`<button class="btn claro pequeno" type="button" id="csv">GUARDAR RESULTADOS</button>`:"");
+  const r=$("#retentar");if(r)r.onclick=processarFila;
+  const c=$("#csv");if(c)c.onclick=guardarCSV;
+}
+function guardarCSV(){
+  const d=E.ultimo;const q=v=>{let s=String(v);if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
+  const csv="﻿"+Object.keys(d).map(q).join(";")+"\r\n"+Object.values(d).map(q).join(";")+"\r\n";
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  a.download=`emocoes-${E.aluno.turma}-${E.aluno.numero}.csv`.replace(/[^\p{L}\d.-]+/gu,"_");a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+
+/* ---------- Arranque ---------- */
+$("#btn-som").innerHTML=P.som;$("#btn-pausa").innerHTML=P.pausa;
+$("#btn-som").setAttribute("aria-pressed",String(Audio_.ligado));
+$("#btn-som").onclick=e=>{Audio_.ligado=!Audio_.ligado;e.currentTarget.setAttribute("aria-pressed",String(Audio_.ligado));if(!Audio_.ligado)Audio_.parar()};
+$("#btn-pausa").onclick=pausar;
+$("#dialogo").addEventListener("cancel",e=>e.preventDefault());
+window.addEventListener("online",processarFila);
+ecraInicio();
+processarFila();
+</script>
+</body>
+</html>
